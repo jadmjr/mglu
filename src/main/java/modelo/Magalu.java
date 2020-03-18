@@ -1,15 +1,16 @@
 package modelo;
 
+import java.util.List;
 import java.util.Map;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.CacheLookup;
+import org.openqa.selenium.support.FindAll;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import controle.Selenium;
 
 public class Magalu {
 	private Map<String, String> data;
@@ -38,6 +39,10 @@ public class Magalu {
 	@CacheLookup
 	private WebElement botaoContinuar;
 
+	@FindAll({ @FindBy(className = "BasketItemProduct-info-sku") })
+	@CacheLookup
+	private List<WebElement> itenSacola;
+
 	public Magalu() {
 	}
 
@@ -59,6 +64,14 @@ public class Magalu {
 		campoDeBusca.sendKeys(nomeProduto);
 		botaoSeguir.click();
 		return this;
+	}
+
+	public boolean validarProdutoSacola(int codigoProduto) {
+		for (WebElement item : itenSacola) {
+			if (item.getText().contains(codigoProduto + ""))
+				return true;
+		}
+		return false;
 	}
 
 	public Magalu(WebDriver driver) {
