@@ -7,6 +7,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.PageFactory;
 
 import com.aventstack.extentreports.ExtentReports;
@@ -18,6 +19,9 @@ import modelo.Magalu;
 
 public class ScriptMagalu {
 	String pathChromeServer = "resources\\chromedriver\\chromedriver.exe";
+	String pathFirefox = "resources\\firefox\\geckodriver.exe";
+	boolean firefox = false;
+
 	String url = "http://www.magazineluiza.com.br";
 	// DRIVER
 	WebDriver driver;
@@ -28,12 +32,19 @@ public class ScriptMagalu {
 	public void validarBuscaProduto(int codigoProduto, String nomeProduto) {
 
 		try {
-			System.setProperty("webdriver.chrome.driver", pathChromeServer);
+			if (firefox) {
+				//System.setProperty("webdriver.firefox.marionette", pathFirefox);
+				//driver = new FirefoxDriver();
+				//
+				System.setProperty("webdriver.gecko.driver", pathFirefox);
+				WebDriver driver = new FirefoxDriver();       
+			} else {
+				System.setProperty("webdriver.chrome.driver", pathChromeServer);
+				ChromeOptions options = new ChromeOptions();
+				options.addArguments("start-maximized");
+				driver = new ChromeDriver(options);
+			}
 
-			ChromeOptions options = new ChromeOptions();
-			options.addArguments("start-maximized");
-
-			driver = new ChromeDriver(options);
 			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 
 			// report
@@ -104,7 +115,7 @@ public class ScriptMagalu {
 
 	}
 
-	// 
+	//
 	public void inicializaReport(String nome) {
 		ExtentHtmlReporter reporter = new ExtentHtmlReporter("./report/" + nome + ".html");
 		extent = new ExtentReports();
